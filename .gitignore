@@ -1,4 +1,6 @@
-data/
+data/CHAOST2/
+data/SABS
+data/pseudolabel_gen.ipynb
 lightning_logs/
 nnUNet/
 pytorch-3dunet/
