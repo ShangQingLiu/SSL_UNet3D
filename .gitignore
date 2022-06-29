@@ -5,3 +5,7 @@ lightning_logs/
 nnUNet/
 pytorch-3dunet/
 torch.ipynb
+*pycache*/
+transformed_data.nii.gz
+transformed_data_Pool.nii.gz
+ssl_my.py
