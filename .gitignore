@@ -9,3 +9,6 @@ torch.ipynb
 transformed_data.nii.gz
 transformed_data_Pool.nii.gz
 ssl_my.py
+runs/
+tb_logs/
+test.pickle
