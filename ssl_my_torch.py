@@ -136,7 +136,7 @@ class SSLDataset(Dataset):
         data = sitk.ReadImage(file_name)
 
         elastic_tr = tio.RandomElasticDeformation(num_control_points=7,locked_borders=2)
-        affine_tr = tio.transforms.RandomAffine(scales=(0.5, 1.5),degrees=(5,5,5))
+        affine_tr = tio.transforms.RandomAffine(scales=(0.95, 1.05),degrees=(1,1,1))
         gamma_tr = tio.RandomGamma(log_gamma=(-0.3,0.3))
 
         ts = tio.Compose([gamma_tr,affine_tr,elastic_tr])
@@ -264,7 +264,7 @@ def _pass_compose(sup_fts, qry_fts, sup_fg_label, sup_bg_label, qry_label_fg, qr
     return qry_pred, sup_pred
 
 def _alp_module(qry_fts, sup_fts, sup_label,params=None, mode='global', thresh=.95):
-    avgPool = nn.AdaptiveAvgPool3d((None,params["proto_grid_size"],params["proto_grid_size"]))  # None is same as input
+    avgPool = nn.AdaptiveAvgPool3d((int(params["proto_grid_size"]/2),params["proto_grid_size"],params["proto_grid_size"]))  # None is same as input
     # [1, same_depteh, 16, 16]
     if mode == 'local':
         
@@ -381,15 +381,15 @@ if __name__ == '__main__':
 
     torch.manual_seed(0) # set default seed for torch operation
      
-    data_param = { "adaptive_size":(24, 88,88), "same_depth":24 }
+    data_param = { "adaptive_size":(24, 128,128), "same_depth":24 }
     model_param = {"lr":1e-4, "proto_grid_size": 8, "f_maps":32}
 
     dataset = SSLDataset(base_dir,sup_img_file,sup_label_file,qry_img_file,qry_label_file, data_param)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = SSL3DUNet(model_param)
-    model_load_path = "save_model/saved_model.pth"
+    model_load_path = "save_model/saved_model_1000.pth"
     if exists(model_load_path):
-        model.load_state_dict(torch.load(model_load_path)) 
+        model.load_state_dict(torch.load(model_load_path),strict=False) 
     if torch.cuda.device_count() > 1:
         print("Let's use", torch.cuda.device_count(), "GPUs!")
         # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
