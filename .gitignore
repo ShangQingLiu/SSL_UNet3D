@@ -12,3 +12,5 @@ ssl_my.py
 runs/
 tb_logs/
 test.pickle
+data/CHAOST2_test/
+lx.zip
